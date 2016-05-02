@@ -33,19 +33,26 @@ function [archivoEncriptado] = encripta(archivo,matrixDeEncriptado)
 end
 function [archivodecriptado] = decripta(archivo)
 	fid = fopen (archivo, 'r');
-		line = fgets(fid);
+		line = fgets(fid); %Leemos todo el documento
 	fclose(fid);
-
-	encoded = strsplit(line,'··');
-	matrixToEncode = parseMatrix(encoded{1,2})
-	[decoderMatrix deter] = gaussMe(matrixToEncode)
+	encoded = strsplit(line,'··'); %Separamos entre texto y matrix
+	usedMatrix = parseMatrix(encoded{1,2});
+	[decoderMatrix deter] = gaussMe(usedMatrix); %Nos regresa det y su inversa si existe
 	if deter==0
 		disp('No tiene solucion, fue encriptado con una matriz no invertible');
 		return
 	end
-	textEncoded = encoded{1,1};
+	%Aqui ya podemos decriptar
+	
+	encodedValues = strsplit(encoded{1,1},'·');
+	pv = zeros(rows(decoderMatrix),1); %Pivote para multiplicar
+	for val = [1:rows(pv)]
+		pv(val)= str2num(encodedValues{1,val})
+	end
+	setstr(  decoderMatrix*pv )
 	
 end
+
 function [matrix] = parseMatrix(enc_matx)
 	sz = str2num(enc_matx(end)) ; %Obtener size
 	matrix = zeros(sz) ; %Inicializar matrix
@@ -58,6 +65,9 @@ function [matrix] = parseMatrix(enc_matx)
 		ix+=sz; %Updateamos
 	end
 end
+function retval = setstr (varargin)
+  retval = char (varargin{:});
+endfunction
 
 %encr=[3 2 1;9 2 1;4 5 6]
 %encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
