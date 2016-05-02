@@ -29,6 +29,9 @@ function [archivoEncriptado] = encripta(archivo,matrixDeEncriptado)
 		end
 		%Ultimo valor es dimension de la matriz usada para encriptar
 		fputs(encriptado,num2str(rows(matrixDeEncriptado)));
+		%Guardamos el formto original
+		fputs(encriptado,'··');
+		fputs(encriptado,substr(archivo, index(archivo, '.')+1));
 	fclose (encriptado);
 end
 function [archivodecriptado] = decripta(archivo,ending='txt')
@@ -60,7 +63,7 @@ function [archivodecriptado] = decripta(archivo,ending='txt')
 end
 
 function [matrix] = parseMatrix(enc_matx)
-	sz = str2num(enc_matx(end)) ; %Obtener size
+	sz = str2num(enc_matx(end)) ; %Obtener size, es el ultimo digito
 	matrix = zeros(sz) ; %Inicializar matrix
 	vals = strsplit(enc_matx,'·'); %Split basandonos en ·
 	ix = 0;
@@ -75,7 +78,7 @@ function retval = setstr (varargin)
   retval = char (varargin{:});
 endfunction
 
-%encr=[3 2 1;9 2 1;4 5 6]
-%encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
-decripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.mau')
+encr=[3 2 1;9 2 1;4 5 6]
+encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
+%decripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.mau')
 
