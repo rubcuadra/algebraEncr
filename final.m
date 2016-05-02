@@ -63,7 +63,7 @@ function [archivodecriptado] = decripta(archivo)
 			if d %Si encontro un break, deja texto de 1 hasta break
 				vs = vs(1:d); %Sliceamos hasta breakLine
 			end
-			chars = setstr(vs) %convierte de numero a ascii
+			chars = setstr(vs); %convierte de numero a ascii
 			fputs(decr, chars); %dump en file
 			ix+=rows(pv); %Proximos chars
 		end
