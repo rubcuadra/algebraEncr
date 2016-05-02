@@ -31,7 +31,8 @@ function [archivoEncriptado] = encripta(archivo,matrixDeEncriptado)
 		fputs(encriptado,num2str(rows(matrixDeEncriptado)));
 	fclose (encriptado);
 end
-function [archivodecriptado] = decripta(archivo)
+function [archivodecriptado] = decripta(archivo,ending='txt')
+	archivodecriptado = strcat(substr(archivo, 1, index(archivo, '.')), ending);
 	fid = fopen (archivo, 'r');
 		line = fgets(fid); %Leemos todo el documento
 	fclose(fid);
