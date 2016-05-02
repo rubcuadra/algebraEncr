@@ -1,6 +1,6 @@
-function encripta(archivo,matrixDeEncriptado)
-	pathEncriptado = strcat(substr(archivo, 1, index(archivo, '.')), 'mau');
-	encriptado = fopen (pathEncriptado, 'w+');
+function [archivoEncriptado] = encripta(archivo,matrixDeEncriptado)
+	archivoEncriptado = strcat(substr(archivo, 1, index(archivo, '.')), 'mau');
+	encriptado = fopen (archivoEncriptado, 'w+');
 		fid = fopen (archivo, 'r');
 			while true
 				line = fgets(fid,rows(matrixDeEncriptado))'	;
@@ -31,10 +31,35 @@ function encripta(archivo,matrixDeEncriptado)
 		fputs(encriptado,num2str(rows(matrixDeEncriptado)));
 	fclose (encriptado);
 end
-function [x, ainv, d, solucion] = decripta(archivo)
+function [archivodecriptado] = decripta(archivo)
+	fid = fopen (archivo, 'r');
+		line = fgets(fid);
+	fclose(fid);
+
+	encoded = strsplit(line,'··');
+	matrixToEncode = parseMatrix(encoded{1,2})
+	[decoderMatrix deter] = gaussMe(matrixToEncode)
+	if deter==0
+		disp('No tiene solucion, fue encriptado con una matriz no invertible');
+		return
+	end
+	textEncoded = encoded{1,1};
 	
 end
-encr=[3 2 1;9 2 1;4 5 6]
-encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
-%decripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.mau')
+function [matrix] = parseMatrix(enc_matx)
+	sz = str2num(enc_matx(end)) ; %Obtener size
+	matrix = zeros(sz) ; %Inicializar matrix
+	vals = strsplit(enc_matx,'·'); %Split basandonos en ·
+	ix = 0;
+	for i = [1:sz]
+		for j = [1:sz]
+			matrix(j,i) = str2num(vals{1,j+ix});
+		end
+		ix+=sz; %Updateamos
+	end
+end
+
+%encr=[3 2 1;9 2 1;4 5 6]
+%encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
+decripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.mau')
 
