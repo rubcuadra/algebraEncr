@@ -34,16 +34,17 @@ function [archivoEncriptado] = encripta(archivo,matrixDeEncriptado)
 		fputs(encriptado,substr(archivo, index(archivo, '.')+1));
 	fclose (encriptado);
 end
-function [archivodecriptado] = decripta(archivo,ending='txt')
-	archivodecriptado = strcat(substr(archivo, 1, index(archivo, '.')), ending);
+function [archivodecriptado] = decripta(archivo)
 	fid = fopen (archivo, 'r');
 		line = fgets(fid); %Leemos todo el documento
 	fclose(fid);
-	encoded = strsplit(line,'··'); %Separamos entre texto y matrix
-	usedMatrix = parseMatrix(encoded{1,2});
+	encoded = strsplit(line,'··'); %Separamos entre texto y matrix y ending
+	archivodecriptado = strcat(substr(archivo, 1, index(archivo, '.')), encoded{1,3}); %generamos archivo original
+	usedMatrix = parseMatrix(encoded{1,2}); %Parseamos matrix
 	[decoderMatrix deter] = gaussMe(usedMatrix); %Nos regresa det y su inversa si existe
 	if deter==0
 		disp('No tiene solucion, fue encriptado con una matriz no invertible');
+		usedMatrix
 		return
 	end
 	%Aqui ya podemos decriptar
@@ -78,7 +79,7 @@ function retval = setstr (varargin)
   retval = char (varargin{:});
 endfunction
 
-encr=[3 2 1;9 2 1;4 5 6]
-encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
-%decripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.mau')
+%encr=[3 2 1;9 2 1;4 5 6]
+%encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
+decripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.mau')
 
