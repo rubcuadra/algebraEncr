@@ -57,9 +57,15 @@ function [archivodecriptado] = decripta(archivo)
 				pv(val)= str2num(encodedValues{1,val+ix});
 			end
 			%Aqui ya se puede multiplicar por que ya se lleno pv
-			%Esta linea de abajo nos va dando los caracteres en el archivo
-			fputs(decr, setstr(decoderMatrix*pv)' );
-			ix+=rows(pv);
+			%vs tiene los valores numericos decriptados
+			vs = (decoderMatrix*pv)';
+			d = find(10==vs); %Break line code en ASCII es 10
+			if d %Si encontro un break, deja texto de 1 hasta break
+				vs = vs(1:d); %Sliceamos hasta breakLine
+			end
+			chars = setstr(vs) %convierte de numero a ascii
+			fputs(decr, chars); %dump en file
+			ix+=rows(pv); %Proximos chars
 		end
 	fclose(decr);
 end
