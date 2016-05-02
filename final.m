@@ -48,19 +48,20 @@ function [archivodecriptado] = decripta(archivo)
 		return
 	end
 	%Aqui ya podemos decriptar
-	
-	encodedValues = strsplit(encoded{1,1},'·');
-	%Dividimos en partes, se iteraran varias veces para multiplicar
-	pv = zeros(rows(decoderMatrix),1); ix = 0;
-	for i = [1: columns(encodedValues)/rows(decoderMatrix)]
-		for val = [1:rows(pv)]
-			pv(val)= str2num(encodedValues{1,val+ix});
+	decr = fopen (archivodecriptado, 'w+');
+		encodedValues = strsplit(encoded{1,1},'·');
+		%Dividimos en partes, se iteraran varias veces para multiplicar
+		pv = zeros(rows(decoderMatrix),1); ix = 0;
+		for i = [1: columns(encodedValues)/rows(decoderMatrix)]
+			for val = [1:rows(pv)]
+				pv(val)= str2num(encodedValues{1,val+ix});
+			end
+			%Aqui ya se puede multiplicar por que ya se lleno pv
+			%Esta linea de abajo nos va dando los caracteres en el archivo
+			fputs(decr, setstr(decoderMatrix*pv)' );
+			ix+=rows(pv);
 		end
-		%Aqui ya se puede multiplicar por que ya se lleno pv
-		%Esta linea de abajo nos va dando los caracteres, dejar en txt
-		setstr(decoderMatrix*pv)'
-		ix+=rows(pv);
-	end
+	fclose(decr);
 end
 
 function [matrix] = parseMatrix(enc_matx)
