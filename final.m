@@ -1,4 +1,4 @@
-function [x, ainv, d, solucion] = encripta(archivo,matrixDeEncriptado)
+function encripta(archivo,matrixDeEncriptado)
 	pathEncriptado = strcat(substr(archivo, 1, index(archivo, '.')), 'mau');
 	encriptado = fopen (pathEncriptado, 'w+');
 		fid = fopen (archivo, 'r');
@@ -10,7 +10,9 @@ function [x, ainv, d, solucion] = encripta(archivo,matrixDeEncriptado)
 					for k= 1:columns(matrixDeEncriptado)-rows(line)
 						line(end+1)=' '; %Rellenamos con Dummy space
 					end
-					line=line';
+					%Esta linea invierte si necesita
+					%Cuando es 1 caracter octave interpreta raro
+					if rows(line)==1 line=line'; end 
 				end
 				for i = (matrixDeEncriptado*line)'
 					fputs (encriptado, num2str(i) ) ;
@@ -29,5 +31,10 @@ function [x, ainv, d, solucion] = encripta(archivo,matrixDeEncriptado)
 		fputs(encriptado,num2str(rows(matrixDeEncriptado)));
 	fclose (encriptado);
 end
-%encr=[3 2 1;9 2 1;4 5 6]
-%encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
+function [x, ainv, d, solucion] = decripta(archivo)
+	
+end
+encr=[3 2 1;9 2 1;4 5 6]
+encripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.txt',encr)
+%decripta('/Users/Ruben/Desktop/4to/Algebra/ProyectoFinal/archivo.mau')
+
