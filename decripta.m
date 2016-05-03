@@ -1,13 +1,17 @@
-function [archivodecriptado] = decripta(archivo)
+function [archivodecriptado] = decripta(archivo, selfMatrix = false)
 	fid = fopen (archivo, 'r');
 		line = fgets(fid); %Leemos todo el documento
 	fclose(fid);
 	encoded = strsplit(line,'··'); %Separamos entre texto y matrix y ending
 	archivodecriptado = strcat(substr(archivo, 1, index(archivo, '.')), encoded{1,3}); %generamos archivo original
-	usedMatrix = parseMatrix(encoded{1,2}); %Parseamos matrix
+	if selfMatrix==false
+		usedMatrix = parseMatrix(encoded{1,2}); %Parseamos matrix
+	else
+		usedMatrix = selfMatrix;
+	end
 	[decoderMatrix deter] = gaussMe(usedMatrix); %Nos regresa det y su inversa si existe
 	if deter==0
-		disp('No tiene solucion, fue encriptado con una matriz no invertible');
+		disp('No tiene solucion, la matriz no es invertible');
 		usedMatrix
 		return
 	end
